@@ -21,7 +21,7 @@ Vercel : compte monsieurmass, scope monsieurmass-projects (`team_kRI1GNI5PEwGCTT
 
 Adaptateur PostgreSQL via pg, compatible Neon. Demande chiffrée AES-256-GCM et état de livraison stockés ensemble dans `kw_vitrine_leads`. Clé primaire (namespace, id), révisions et bail de traitement pour sérialiser les mises à jour. La création du schéma est une commande explicite ; le build ne migre pas de données. Les anciens fichiers locaux ne sont ni supprimés ni migrés automatiquement.
 
-Plan proposé : Neon `free_v3`, région Francfort, authentification applicative Neon désactivée, connexion exclusivement Preview. La CLI a confirmé l’offre Free mais bloque l’installation sur l’acceptation des conditions. Aucune base distante n’est déclarée opérationnelle tant que cette étape et le test réseau ne sont pas terminés. Aucun compte ou plan payant souscrit.
+Plan actif : Neon `free_v3` gratuit, région Francfort, authentification applicative Neon désactivée, connexion exclusivement Preview. Après acceptation des conditions par le propriétaire, la base a été provisionnée ; le schéma, la persistance distante et les lectures sont vérifiés. Aucun compte ou plan payant souscrit.
 
 Les tests SQL utilisent un moteur PostgreSQL PGlite isolé en mémoire. Ils vérifient les requêtes et la logique ; ils ne remplacent pas une recette du pool pg/TLS avec la base distante.
 
@@ -58,3 +58,9 @@ Voir .env.preview.example. DATABASE_URL, LEAD_ENCRYPTION_KEY et OPERATIONS_SECRE
 ## Limites restantes
 
 Neon free_v3 en région Francfort est actif ; persistance distante, connexion Notion de test et restauration isolée sont vérifiées. Restent : configuration d’un ordonnanceur Preview et d’une alerte réelle, recette Safari/téléphones physiques, confirmation des informations juridiques et commerciales. Aucune promesse de production ou de migration complète.
+
+## Recette en ligne vérifiée
+
+Vercel confirme la cible Preview et l’état Ready. Le formulaire est affiché en Chromium mobile sur la Preview protégée, sans erreur JavaScript. Les appels distants vérifient : création 201 avec livraison Notion, répétition 200 avec la même référence, correction 201 avec la même référence, endpoint opérateur sans autorisation 401. Santé finale de recette : quatre demandes fictives, quatre synchronisées, zéro en attente et zéro erreur d’accès. Robots interdit l’indexation ; les URL générées utilisent le domaine du déploiement. Treize tests serveur passent, dont la reprise après cent fiches déjà livrées.
+
+Incident de préparation : une première tentative API a été classée production par Vercel ; elle a été annulée en cours de build, avant disponibilité et sans alias attribué. Les déploiements livrés utilisent explicitement Preview. Aucun site de production existant ni domaine n’a été modifié.
