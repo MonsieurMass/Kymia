@@ -1,0 +1,28 @@
+import {chromium,webkit} from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+import assert from 'node:assert/strict';
+import {mkdir,writeFile} from 'node:fs/promises';
+const base=process.env.TEST_BASE_URL||'http://localhost:3100';
+const out=process.env.MOBILE_REPORT_DIR||'docs/mobile';await mkdir(out,{recursive:true});
+const paths=['/','/services','/financement','/label-services','/developpement-artistique','/a-propos','/projets','/demarrer','/contact','/mentions-legales','/confidentialite','/cookies'];
+const report={simulation:'Pro Max 440 × 956 CSS px ; aucune validation sur téléphone physique',engines:[]};
+for(const [name,engine]of [['Chromium',chromium],['WebKit',webkit]]){
+ const browser=await engine.launch();try{
+ const context=await browser.newContext({viewport:{width:440,height:956},isMobile:true,hasTouch:true,deviceScaleFactor:3});
+ const page=await context.newPage(),errors=[],r={name,layouts:[],accessibility:[],form:false,menu:false};page.on('pageerror',e=>errors.push(e.message));
+ await page.route('**/api/leads',route=>route.fulfill({status:201,contentType:'application/json',body:JSON.stringify({id:'simulation-mobile-isolee',delivery:'notion'})}));
+ for(const [width,height]of [[320,740],[375,812],[390,844],[440,956],[956,440]]){await page.setViewportSize({width,height});for(const path of paths){const response=await page.goto(base+path);assert.equal(response.status(),200);await page.evaluate(()=>document.fonts.ready);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${name} ${width} ${path}`);r.layouts.push({width,height,path,overflow:false})}console.log(name+' '+width+' : 12 pages vérifiées')}
+ await page.setViewportSize({width:440,height:956});await page.goto(base+'/');await page.screenshot({path:`${out}/${name}-accueil.png`});
+ const targets=await page.locator('header a,header button,main a,main button,footer a').evaluateAll(nodes=>nodes.filter(e=>{const r=e.getBoundingClientRect();return r.width&&r.height&&r.height<44}).map(e=>e.textContent));assert.deepEqual(targets,[]);r.touchTargets=true;
+ const menu=page.getByRole('button',{name:'Menu +'});await menu.click();assert.equal(await page.locator('#main-nav').isVisible(),true);await page.keyboard.press('Escape');assert.equal(await menu.getAttribute('aria-expanded'),'false');assert.equal(await menu.evaluate(e=>document.activeElement===e),true);
+ await menu.click();await page.locator('.hero-bottom').tap();assert.equal(await menu.getAttribute('aria-expanded'),'false');await menu.click();await page.getByRole('navigation',{name:'Navigation principale'}).getByRole('link',{name:'Expertises',exact:true}).click();await page.waitForURL('**/services');assert.equal(await menu.getAttribute('aria-expanded'),'false');r.menu=true;
+ for(const path of ['/','/demarrer','/financement']){await page.goto(base+path);const a=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();r.accessibility.push({path,violations:a.violations.map(v=>v.id)});assert.equal(a.violations.length,0,JSON.stringify(a.violations.map(v=>v.id)))}
+ await page.goto(base+'/demarrer?service=financement');r.formTop=await page.locator('form').evaluate(e=>e.getBoundingClientRect().top);assert.ok(r.formTop<360);await page.screenshot({path:`${out}/${name}-formulaire.png`});
+ await page.getByLabel('Nom ou nom').fill('TEST MOBILE ISOLÉ');await page.getByLabel('Courriel',{exact:true}).fill('mobile@example.invalid');await page.getByLabel('Type de structure').selectOption('Association');await page.getByRole('button',{name:'Continuer'}).click();
+ const position=await page.locator('form h2').evaluate(e=>({heading:e.getBoundingClientRect().top,header:document.querySelector('header').getBoundingClientRect().bottom}));assert.ok(position.heading>=position.header,JSON.stringify(position));
+ await page.getByRole('radio',{name:'EP',exact:true}).check();await page.getByRole('button',{name:'Continuer'}).click();assert.ok(await page.getByRole('radio',{name:'Financement',exact:true}).isChecked());await page.getByRole('button',{name:'Continuer'}).click();await page.getByRole('radio',{name:'Projet en préparation',exact:true}).check();await page.getByRole('button',{name:'Continuer'}).click();await page.getByLabel('Description du projet').fill('Une demande fictive pour la recette mobile entièrement isolée.');
+ await page.setViewportSize({width:440,height:480});await page.getByLabel('Lien musical').fill('https://example.invalid/ep');await page.getByRole('button',{name:'Continuer'}).click();await page.setViewportSize({width:440,height:956});
+ await page.getByRole('button',{name:'Modifier : Besoin',exact:true}).click();await page.getByRole('radio',{name:'Administration',exact:true}).check();await page.getByRole('button',{name:'Revenir au récapitulatif'}).click();await page.getByRole('checkbox').check();await page.getByRole('button',{name:'Envoyer ma demande'}).click();await page.getByRole('heading',{name:'Votre demande est enregistrée.'}).waitFor();assert.equal(await page.evaluate(()=>document.activeElement.tagName),'H2');r.form=true;r.errors=errors;assert.deepEqual(errors,[]);report.engines.push(r);
+ }finally{await browser.close()}
+}
+await writeFile(`${out}/report.json`,JSON.stringify(report,null,2));console.log(JSON.stringify(report.engines.map(e=>({engine:e.name,layouts:e.layouts.length,form:e.form,menu:e.menu,formTop:e.formTop,axe:e.accessibility,errors:e.errors})),null,2));

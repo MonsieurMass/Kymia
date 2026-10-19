@@ -19,7 +19,7 @@ export default function LeadForm(){
  },[dirty,receipt]);
  useEffect(()=>{if(receipt)success.current?.focus();else if(error)errorBox.current?.focus();},[receipt,error]);
  function update(key:string,value:string){setData(d=>({...d,[key]:value}));setDirty(true);setError('');setErrorField('')}
- function move(next:number){setError('');setErrorField('');setStep(next);requestAnimationFrame(()=>heading.current?.focus())}
+ function move(next:number){setError('');setErrorField('');setStep(next);requestAnimationFrame(()=>{heading.current?.focus({preventScroll:true});heading.current?.closest('form')?.scrollIntoView({block:'start',behavior:'instant'})})}
  function edit(group:number){setEditing(true);move(group)}
  function download(){const blob=new Blob([JSON.stringify({reference:receipt||undefined,...data},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=receipt?'kymia-ma-demande.json':'kymia-mon-brouillon.json';a.click();URL.revokeObjectURL(url)}
  async function submit(e:React.FormEvent){
@@ -43,7 +43,7 @@ export default function LeadForm(){
   <div className="form-progress" role="group" aria-label={`Étape ${step+1} sur 6`}>{steps.map((s,i)=><span key={s} className={i<=step?'active':''}/>)}</div>
   <div className="eyebrow">0{step+1} / 06 · {steps[step]}</div>
   <h2 ref={heading} tabIndex={-1}>{['Faisons connaissance.','Que préparez-vous ?','De quoi avez-vous besoin ?','Où en êtes-vous ?','Dites-nous en plus.','Vérifiez votre demande.'][step]}</h2>
-  {data.sourceService&&step===0?<p className="form-context">Votre point d’entrée : {{financement:'Financement','label-services':'Structuration de projet','developpement-artistique':'Développement artistique'}[data.sourceService]}. Vous pourrez préciser ou modifier votre besoin.</p>:null}
+  {data.sourceService&&step===0?<p className="form-context">{{financement:'Financement','label-services':'Structuration de projet','developpement-artistique':'Développement artistique'}[data.sourceService]} · Besoin modifiable à l’étape 3.</p>:null}
   {error?<p ref={errorBox} tabIndex={-1} id="lead-error" className="error" role="alert">{error}</p>:null}
   {step===0?<><label>Nom ou nom d’artiste<input required name="name" autoComplete="name" maxLength={fields.name.max} value={data.name||''} onChange={e=>update('name',e.target.value)} {...invalid('name')}/></label><label>Courriel<input required type="email" name="email" autoComplete="email" spellCheck={false} maxLength={fields.email.max} value={data.email||''} onChange={e=>update('email',e.target.value)} {...invalid('email')}/></label><label>Type de structure<select required name="structure" value={data.structure||''} onChange={e=>update('structure',e.target.value)} {...invalid('structure')}><option value="">Choisir votre situation</option>{fields.structure.options.map(s=><option key={s}>{s}</option>)}</select></label></>:null}
   {[1,2,3].includes(step)?<fieldset><legend>{steps[step]}</legend><div className="choice-grid">{fields[(['project','need','maturity'] as const)[step-1]].options.map(c=>{const key=['project','need','maturity'][step-1];return <label className="choice" key={c}><input required type="radio" name={key} value={c} checked={data[key]===c} onChange={()=>update(key,c)} {...invalid(key)}/><span>{c}</span></label>})}</div></fieldset>:null}

@@ -16,7 +16,8 @@
     "backup": "node --env-file-if-exists=.env.local scripts/operations.mjs backup",
     "restore": "node --env-file-if-exists=.env.local scripts/operations.mjs restore",
     "legal:check": "node scripts/operations.mjs legal",
-    "test:browser": "node tests/browser.mjs"
+    "test:browser": "node tests/browser.mjs",
+    "test:mobile": "node tests/mobile-browser.mjs"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "^5.2.0",
