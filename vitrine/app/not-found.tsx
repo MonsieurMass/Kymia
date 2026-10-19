@@ -1,0 +1,1 @@
+import {Button} from '../components/ui';export default function NotFound(){return <section className='section page-intro'><div className='eyebrow'>404</div><h1>Une autre<br/>direction.</h1><p>Cette page n’existe pas.</p><Button href='/'>Revenir à l’accueil</Button></section>}

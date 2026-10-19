@@ -1,0 +1,43 @@
+{
+  "name": "kymia-world-vitrine",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3100",
+    "build": "next build",
+    "start": "next start -p 3100",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.mjs",
+    "notion:check": "node --env-file-if-exists=.env.local scripts/sync-notion.mjs --check",
+    "notion:sync": "node --env-file-if-exists=.env.local scripts/sync-notion.mjs",
+    "storage:init": "node --env-file-if-exists=.env.local scripts/operations.mjs init",
+    "queue:status": "node --env-file-if-exists=.env.local scripts/operations.mjs health",
+    "queue:retry": "node --env-file-if-exists=.env.local scripts/operations.mjs retry",
+    "backup": "node --env-file-if-exists=.env.local scripts/operations.mjs backup",
+    "restore": "node --env-file-if-exists=.env.local scripts/operations.mjs restore",
+    "legal:check": "node scripts/operations.mjs legal",
+    "test:browser": "node tests/browser.mjs"
+  },
+  "dependencies": {
+    "@fontsource/barlow-condensed": "^5.2.0",
+    "@fontsource/dm-sans": "^5.2.0",
+    "next": "^16.0.0",
+    "pg": "^8.23.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@electric-sql/pglite": "^0.5.10",
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^24.0.0",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "lighthouse": "^13.0.0",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=22.16"
+  }
+}

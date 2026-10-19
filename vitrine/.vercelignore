@@ -1,0 +1,10 @@
+.env*
+!.env.example
+!.env.preview.example
+.local
+node_modules
+.next
+backups
+test-results
+docs/audit-2026-10-19/*.png
+docs/*.png

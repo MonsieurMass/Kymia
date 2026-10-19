@@ -1,0 +1,1 @@
+import {services,pages} from '../lib/content';export default function sitemap(){const base=process.env.NEXT_PUBLIC_SITE_URL||'http://localhost:3100';return ['', 'services','demarrer',...services.map(s=>s.slug),...Object.keys(pages)].map(s=>({url:base+'/'+s}))}
