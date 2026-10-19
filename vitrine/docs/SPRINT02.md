@@ -31,7 +31,7 @@ Le pipeline commercial existant et son jeton local sont préservés ; vérificat
 
 Un bac à sable vide a été créé dans Notion : `TESTS TECHNIQUES — KYMIA WORLD Preview`, base `99b39047889c40d984132e288c8610f3`, source `46261257-1e72-4759-bb31-4da584898580`. Ce n’est pas un second CRM commercial. Aucun prospect réel importé.
 
-La Preview exige un namespace preview-*, refuse le pipeline commercial connu et nécessite KYMIA_NOTION_MODE=preview pour activer un jeton de test. Sans jeton dédié au bac à sable, conserver KYMIA_NOTION_MODE=disabled. Le jeton local du CRM réel ne doit pas être copié dans Vercel Preview. Une intégration Notion de test, limitée au bac à sable, reste à configurer ; aucune nouvelle condition contractuelle développeur n’a été acceptée à la place du propriétaire.
+La Preview exige un namespace preview-*, refuse le pipeline commercial connu et nécessite KYMIA_NOTION_MODE=preview pour activer un jeton de test. Sans jeton dédié au bac à sable, conserver KYMIA_NOTION_MODE=disabled. Le jeton local du CRM réel ne doit pas être copié dans Vercel Preview. Une intégration Notion dédiée est configurée, limitée au bac à sable. Son accès au CRM commercial a été testé et refusé.
 
 ## Supervision et reprise
 
@@ -43,7 +43,7 @@ La réception tente une synchronisation puis une reprise après réponse. En loc
 
 Exécuter avec l’environnement de la destination explicitement chargé : npm run backup -- /chemin/prive/backup.json. La sauvegarde contient les enveloppes chiffrées et les reçus, pas la clé. Conserver la clé dans un coffre séparé, tester la restauration sur une destination isolée.
 
-Restauration : npm run restore -- /chemin/prive/backup.json, uniquement vers un namespace PostgreSQL vide, après validation du propriétaire. Le script vérifie le déchiffrement avant écriture, refuse les destinations non vides et l’import de données réelles dans un namespace Preview. L’insertion de l’ensemble est atomique. Aucune restauration ou migration historique n’a été lancée dans ce sprint.
+Restauration : npm run restore -- /chemin/prive/backup.json, uniquement vers un namespace PostgreSQL vide, après validation du propriétaire. Le script vérifie le déchiffrement avant écriture, refuse les destinations non vides et l’import de données réelles dans un namespace Preview. L’insertion de l’ensemble est atomique. Une sauvegarde chiffrée contenant une seule demande fictive a été restaurée et vérifiée dans preview-restore-sprint02. Aucune migration historique ni restauration de données réelles.
 
 ## Informations manquantes exactes
 
@@ -57,4 +57,4 @@ Voir .env.preview.example. DATABASE_URL, LEAD_ENCRYPTION_KEY et OPERATIONS_SECRE
 
 ## Limites restantes
 
-Activation de Neon, test réseau pg/TLS, connexion Notion de test, configuration d’un ordonnanceur Preview et d’une alerte réelle, recette Safari/téléphones physiques, confirmation des informations juridiques et commerciales. Aucune promesse de production ou de migration complète.
+Neon free_v3 en région Francfort est actif ; persistance distante, connexion Notion de test et restauration isolée sont vérifiées. Restent : configuration d’un ordonnanceur Preview et d’une alerte réelle, recette Safari/téléphones physiques, confirmation des informations juridiques et commerciales. Aucune promesse de production ou de migration complète.
