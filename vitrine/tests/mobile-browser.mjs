@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 const base=process.env.TEST_BASE_URL||'http://localhost:3100';
 const out=process.env.MOBILE_REPORT_DIR||'docs/mobile';await mkdir(out,{recursive:true});
-const paths=['/','/services','/financement','/label-services','/developpement-artistique','/a-propos','/projets','/demarrer','/contact','/mentions-legales','/confidentialite','/cookies'];
+const paths=['/','/services','/financement','/label-services','/developpement-artistique','/a-propos','/projets','/demarrer','/contact','/mentions-legales','/confidentialite','/cookies','/guides','/pour/artistes-independants','/pour/labels-independants','/guides/preparer-sortie-musicale','/guides/identifier-opportunites-financement'];
 const report={simulation:'Pro Max 440 × 956 CSS px ; aucune validation sur téléphone physique',engines:[]};
 for(const [name,engine]of [['Chromium',chromium],['WebKit',webkit]]){
  const browser=await engine.launch();try{
@@ -16,7 +16,7 @@ for(const [name,engine]of [['Chromium',chromium],['WebKit',webkit]]){
  const targets=await page.locator('header a,header button,main a,main button,footer a').evaluateAll(nodes=>nodes.filter(e=>{const r=e.getBoundingClientRect();return r.width&&r.height&&r.height<44}).map(e=>e.textContent));assert.deepEqual(targets,[]);r.touchTargets=true;
  const menu=page.getByRole('button',{name:'Menu +'});await menu.click();assert.equal(await page.locator('#main-nav').isVisible(),true);await page.keyboard.press('Escape');assert.equal(await menu.getAttribute('aria-expanded'),'false');assert.equal(await menu.evaluate(e=>document.activeElement===e),true);
  await menu.click();await page.locator('.hero-bottom').tap();assert.equal(await menu.getAttribute('aria-expanded'),'false');await menu.click();await page.getByRole('navigation',{name:'Navigation principale'}).getByRole('link',{name:'Expertises',exact:true}).click();await page.waitForURL('**/services');assert.equal(await menu.getAttribute('aria-expanded'),'false');r.menu=true;
- for(const path of ['/','/demarrer','/financement']){await page.goto(base+path);const a=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();r.accessibility.push({path,violations:a.violations.map(v=>v.id)});assert.equal(a.violations.length,0,JSON.stringify(a.violations.map(v=>v.id)))}
+ for(const path of ['/','/demarrer','/financement','/guides','/pour/artistes-independants','/guides/preparer-sortie-musicale']){await page.goto(base+path);const a=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();r.accessibility.push({path,violations:a.violations.map(v=>v.id)});assert.equal(a.violations.length,0,JSON.stringify(a.violations.map(v=>v.id)))}
  await page.goto(base+'/demarrer?service=financement');r.formTop=await page.locator('form').evaluate(e=>e.getBoundingClientRect().top);assert.ok(r.formTop<360);await page.screenshot({path:`${out}/${name}-formulaire.png`});
  await page.getByRole('radio',{name:'EP',exact:true}).check();await page.getByRole('button',{name:'Continuer'}).click();
  const position=await page.locator('form h2').evaluate(e=>({heading:e.getBoundingClientRect().top,header:document.querySelector('header').getBoundingClientRect().bottom}));assert.ok(position.heading>=position.header,JSON.stringify(position));
