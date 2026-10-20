@@ -4,7 +4,7 @@ export const fields={
  name:{label:'Nom ou nom d’artiste',max:120,required:true},email:{label:'Courriel',max:254,required:true},
  structure:{label:'Type de structure',max:60,required:true,options:['Artiste sans structure','Micro-entreprise','Association','Société','Label indépendant','Autre']},
  project:{label:'Projet',max:80,required:true,options:['EP','Album','Single','Clip','Concert','Développement de carrière','Structuration administrative','Autre']},
- need:{label:'Besoin',max:80,required:true,options:['Financement','Montage de dossier','Accompagnement','Administration','Stratégie','Autre']},
+ need:{label:'Besoin',max:80,required:true,options:['Préparation de sortie','Financement','Montage de dossier','Back-office','Distribution','Accompagnement','Administration','Stratégie','Autre']},
  maturity:{label:'Maturité',max:80,required:true,options:['Projet en réflexion','Projet en préparation','Projet déjà lancé','Projet en exploitation']},
  description:{label:'Description du projet',max:5000,required:true},budget:{label:'Budget',max:15},calendar:{label:'Calendrier',max:200},link:{label:'Lien musical',max:2000},
  consent:{label:'Confidentialité',max:3},privacyVersion:{label:'Version de la notice',max:30},website:{label:'Site web',max:300},sourceService:{label:'Service d’entrée',max:80}
@@ -30,4 +30,4 @@ export function validateLead(data){
  for(const key of Object.keys(fundingFields))if(!out[key])delete out[key];
  delete out.website;return out;
 }
-export function serviceFromSlug(slug){return {'financement':'Financement','label-services':'Administration','developpement-artistique':'Accompagnement'}[slug]||'';}
+export function serviceFromSlug(slug){return {'financement':'Financement','label-services':'Back-office','developpement-artistique':'Préparation de sortie'}[slug]||'';}

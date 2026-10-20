@@ -14,7 +14,7 @@ Vercel : compte monsieurmass, scope monsieurmass-projects (`team_kRI1GNI5PEwGCTT
 - Garde synchrone contre le double envoi, paramètres de service repris, avertissement de rechargement/sortie, copie de brouillon sur demande, modification directe par section, focus erreur et confirmation. La navigation historique bénéficie de la Navigation API lorsqu’elle est disponible ; contrôle manuel Safari requis pour ce comportement.
 - Introduction mobile compacte ; identité visuelle et architecture éditoriale conservées.
 - Validation partagée des listes, limites, montants et URL ; erreurs lisibles et associées aux champs.
-- Trois niveaux financement explicites : réception/premier examen gratuit, analyse humaine à partir de 49 € avec éléments commerciaux à confirmer, montage/suivi sur devis. FAQ tarifaire retirée des autres services. Aucun diagnostic instantané, délai ou courriel automatique promis.
+- Trois niveaux financement explicites : orientation immédiate et premier examen gratuit, analyse humaine sur proposition avec périmètre, prix et délai à confirmer, montage/suivi sur devis. FAQ tarifaire retirée des autres services. Aucun diagnostic instantané, délai ou courriel automatique promis.
 - Contrôle Vercel effectué avant tout accès disque. Aucune configuration de clé ne permet de réactiver le stockage local sur Vercel.
 
 ## Persistance
@@ -49,7 +49,7 @@ Restauration : npm run restore -- /chemin/prive/backup.json, uniquement vers un 
 
 La commande npm run legal:check produit la liste des champs et leur état, sans inventer de valeurs : identité/raison sociale, forme juridique, adresse du siège, SIREN/registre, responsable de publication, courriel officiel et exercice des droits, nom/adresse/contact hébergeur, responsable de traitement, base légale, durée/critères de conservation, destinataires/sous-traitants, transferts/garanties, TVA/régime à confirmer, délai opérationnel de réponse. WhatsApp reste absent sans numéro officiel.
 
-Les propriétés sont configurables côté serveur via lib/legal.mjs. Les mentions affichent uniquement les valeurs fournies ou l’état « À confirmer avant publication ». Les contenus juridiques restent préparatoires. L’analyse à 49 € nécessite encore confirmation du périmètre, des livrables et du délai.
+Les propriétés sont configurables côté serveur via lib/legal.mjs. Les mentions affichent uniquement les valeurs fournies ou l’état « À confirmer avant publication ». Les contenus juridiques restent préparatoires. Le périmètre, le prix et le délai de l’analyse humaine nécessitent encore une décision commerciale.
 
 ## Environnement Preview
 
@@ -64,3 +64,13 @@ Neon free_v3 en région Francfort est actif ; persistance distante, connexion No
 Vercel confirme la cible Preview et l’état Ready. Le formulaire est affiché en Chromium mobile sur la Preview protégée, sans erreur JavaScript. Les appels distants vérifient : création 201 avec livraison Notion, répétition 200 avec la même référence, correction 201 avec la même référence, endpoint opérateur sans autorisation 401. Santé finale de recette : quatre demandes fictives, quatre synchronisées, zéro en attente et zéro erreur d’accès. Robots interdit l’indexation ; les URL générées utilisent le domaine du déploiement. Treize tests serveur passent, dont la reprise après cent fiches déjà livrées.
 
 Incident de préparation : une première tentative API a été classée production par Vercel ; elle a été annulée en cours de build, avant disponibilité et sans alias attribué. Les déploiements livrés utilisent explicitement Preview. Aucun site de production existant ni domaine n’a été modifié.
+
+## Suite produit — 20 octobre 2026
+
+La vitrine devient la porte d’entrée du système de label services sans reconstruire son identité visuelle. L’accueil présente trois besoins concrets : préparer une sortie, explorer les financements et organiser le back-office. Le formulaire commence par le projet ; le profil et les coordonnées arrivent seulement après la qualification du besoin.
+
+Pour un besoin de financement, une orientation indicative apparaît avant toute demande de nom ou d’adresse e-mail. Elle expose les pistes potentielles, les critères manquants et les prochaines actions, sans annoncer d’éligibilité ni promettre un financement. Le prospect choisit ensuite entre conserver l’aperçu sans relance ou demander un premier examen humain. Ce choix reste transmis avec la demande et exploitable dans le suivi commercial.
+
+Les nouvelles catégories du formulaire couvrent préparation de sortie, financement, montage de dossier, back-office, distribution, accompagnement, administration et stratégie. « Distribution » qualifie un besoin ; elle ne suppose ni partenaire, ni contrat, ni mise en ligne automatique. Les intitulés envoyés restent compatibles avec la propriété texte « Offre envisagée » du CRM.
+
+Validation finale locale : 20 tests serveur réussis, typecheck et build réussis, 12 pages contrôlées sur 6 largeurs sans débordement, scénarios Sprint 02 réussis, et parcours financement réussi sur Chromium et WebKit avec zéro violation axe détectée sur les pages contrôlées. Le test mobile couvre 120 rendus, dont 430 × 932, sans erreur navigateur.

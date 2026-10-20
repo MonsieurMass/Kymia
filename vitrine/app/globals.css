@@ -135,3 +135,4 @@
 .funding-questions summary{font-size:14px;min-height:48px;padding:12px 0}
 @media(max-width:760px){.funding-preview{padding:18px;margin-top:8px}.funding-preview>h3{font-size:28px}.funding-preview h4{font-size:24px}.funding-preview .fine{font-size:12px}.funding-preview .text-link{max-width:100%;overflow-wrap:anywhere}}
 .funding-preview .funding-amount{padding:12px;border-left:2px solid var(--soft);background:#9caaff0d;color:var(--paper);font-size:13px}
+.contact-choice{padding:14px 16px;border-left:2px solid var(--soft);background:#9caaff0d;color:var(--paper)!important;font-size:13px!important}
