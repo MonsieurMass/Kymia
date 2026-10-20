@@ -1,0 +1,3 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {readdir,readFile} from 'node:fs/promises';import {join,extname} from 'node:path';
+async function files(dir){const entries=await readdir(dir,{withFileTypes:true});const nested=await Promise.all(entries.map(entry=>entry.isDirectory()?files(join(dir,entry.name)):[join(dir,entry.name)]));return nested.flat()}
+test('l’interface ne contient aucun glyphe susceptible de devenir un emoji',async()=>{const paths=(await Promise.all(['app','components'].map(files))).flat().filter(path=>['.tsx','.css'].includes(extname(path)));const forbidden=/[↗↓←→✳◎≋✓✕⚠✅❌\u{1F000}-\u{1FAFF}]/u;for(const path of paths){const source=await readFile(path,'utf8');assert.doesNotMatch(source,forbidden,path)}});
