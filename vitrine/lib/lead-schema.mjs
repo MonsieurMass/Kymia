@@ -1,4 +1,6 @@
+import {fundingFields} from './funding-preview.mjs';
 export const fields={
+ ...fundingFields,
  name:{label:'Nom ou nom d’artiste',max:120,required:true},email:{label:'Courriel',max:254,required:true},
  structure:{label:'Type de structure',max:60,required:true,options:['Artiste sans structure','Micro-entreprise','Association','Société','Label indépendant','Autre']},
  project:{label:'Projet',max:80,required:true,options:['EP','Album','Single','Clip','Concert','Développement de carrière','Structuration administrative','Autre']},
@@ -15,7 +17,7 @@ export function validateLead(data){
   const value=(data[name]||'').trim();out[name]=value;
   if(value.length>rule.max)throw new LeadError(`${rule.label} : ${rule.max} caractères maximum.`,name);
   if(rule.required&&!value)throw new LeadError(`Renseignez le champ « ${rule.label} ».`,name);
-  if(rule.options&&!rule.options.includes(value))throw new LeadError(`Choisissez une valeur proposée pour « ${rule.label} ».`,name);
+  if(rule.options&&(value||rule.required)&&!rule.options.includes(value))throw new LeadError(`Choisissez une valeur proposée pour « ${rule.label} ».`,name);
  }
  if(out.website)throw new LeadError('Demande refusée.','website');
  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(out.email))throw new LeadError('Saisissez un courriel valide.','email');
@@ -25,6 +27,7 @@ export function validateLead(data){
  if(out.privacyVersion!=='notion-v1')throw new LeadError('La notice a changé. Rechargez le formulaire après avoir conservé votre copie.','consent');
  if(out.consent!=='yes')throw new LeadError('Confirmez la lecture de la notice de confidentialité.','consent');
  if(out.sourceService&&!['financement','label-services','developpement-artistique'].includes(out.sourceService))throw new LeadError('Service d’entrée invalide.','sourceService');
+ for(const key of Object.keys(fundingFields))if(!out[key])delete out[key];
  delete out.website;return out;
 }
 export function serviceFromSlug(slug){return {'financement':'Financement','label-services':'Administration','developpement-artistique':'Accompagnement'}[slug]||'';}

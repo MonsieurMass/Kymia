@@ -1,3 +1,4 @@
+import {fundingNotes} from './funding-preview.mjs';
 // Serveur uniquement. Schéma du pipeline KYMIA vérifié dans Notion.
 export const KYMIA_DATA_SOURCE_ID = '8953abce-3d9d-826b-b387-879e4c24d7bf';
 export function notionConfig(env = process.env) {
@@ -8,9 +9,9 @@ export function notionConfig(env = process.env) {
 }
 const rich = (value) => Array.from({length:Math.ceil(value.length/1800)},(_,i)=>({type:'text',text:{content:value.slice(i*1800,(i+1)*1800)}}));
 export const leadMarker = id => `KYMIA-WEB:${id}`;
-export function mapLeadToNotion({id,createdAt,data:d},dataSourceId=KYMIA_DATA_SOURCE_ID) {
+export function mapLeadToNotion({id,createdAt,data:d,orientation},dataSourceId=KYMIA_DATA_SOURCE_ID) {
   const segment=d.structure==='Association'?'Association':d.structure==='Label indépendant'?'Label':d.structure==='Artiste sans structure'?'Artiste':'Autre';
-  const notes=[leadMarker(id),'Source : formulaire KYMIA WORLD',`Reçue le : ${createdAt}`,`Artiste / contact : ${d.name}`,`Projet : ${d.project}`,`Structure : ${d.structure}`,`Service demandé : ${d.need}`,`Maturité : ${d.maturity}`,`Description : ${d.description}`,`Budget du projet : ${d.budget ? d.budget+' €':'Non précisé'}`,`Calendrier : ${d.calendar||'Non précisé'}`,`Lien musical : ${d.link||'Non précisé'}`,'Notice de confidentialité acceptée lors de l’envoi.'].join('\n');
+  const notes=[leadMarker(id),'Source : formulaire KYMIA WORLD',`Reçue le : ${createdAt}`,`Artiste / contact : ${d.name}`,`Projet : ${d.project}`,`Structure : ${d.structure}`,`Service demandé : ${d.need}`,`Maturité : ${d.maturity}`,`Description : ${d.description}`,`Budget du projet : ${d.budget ? d.budget+' €':'Non précisé'}`,`Calendrier : ${d.calendar||'Non précisé'}`,`Lien musical : ${d.link||'Non précisé'}`,`Contact souhaité : ${d.contactPreference==='not_requested'?'NON — aperçu uniquement, ne pas relancer':d.contactPreference==='requested'?'OUI — analyse personnalisée demandée':'Non renseigné dans l’ancienne version'}`,fundingNotes(d,orientation),'Notice de confidentialité acceptée lors de l’envoi.'].join('\n');
   return {parent:{type:'data_source_id',data_source_id:dataSourceId},properties:{
     'Opportunité':{title:rich(`${d.name} — ${d.project}`)},
     'Contact':{rich_text:rich(d.email)},
@@ -18,7 +19,7 @@ export function mapLeadToNotion({id,createdAt,data:d},dataSourceId=KYMIA_DATA_SO
     'Phase':{status:{name:'À qualifier'}},
     'Segment':{select:{name:segment}},
     'Source acquisition':{select:{name:'Inbound'}},
-    'Prochaine action':{rich_text:rich('Examiner la demande et préparer un premier échange avec l’artiste.')},
+    'Prochaine action':{rich_text:rich(d.contactPreference==='not_requested'?'Aperçu uniquement — aucune relance commerciale demandée.':'Examiner la demande et préparer un premier échange avec l’artiste.')},
     'Notes':{rich_text:rich(notes)}
   }};
 }
@@ -28,7 +29,7 @@ export async function notionRequest(config,path,body,{fetcher=fetch,method='POST
   return response.json();
 }
 export async function deliverToNotion(lead,config,fetcher=fetch,knownPageId) {
-  async function update(pageId){const payload=mapLeadToNotion(lead,config.dataSourceId);delete payload.properties.Phase;delete payload.properties['Prochaine action'];delete payload.properties['Source acquisition'];await notionRequest(config,`pages/${pageId}`,{properties:payload.properties},{fetcher,method:'PATCH'});return {pageId,recovered:true};}
+  async function update(pageId){const payload=mapLeadToNotion(lead,config.dataSourceId);delete payload.properties.Phase;delete payload.properties['Source acquisition'];if(lead.data.contactPreference){const existing=await notionRequest(config,`pages/${pageId}`,null,{fetcher,method:'GET'});const action=(existing.properties?.['Prochaine action']?.rich_text||[]).map(x=>x.plain_text||x.text?.content||'').join('');const owned=['Examiner la demande et préparer un premier échange avec l’artiste.','Aperçu uniquement — aucune relance commerciale demandée.'];if(!owned.includes(action))delete payload.properties['Prochaine action'];}else delete payload.properties['Prochaine action'];await notionRequest(config,`pages/${pageId}`,{properties:payload.properties},{fetcher,method:'PATCH'});return {pageId,recovered:true};}
   if(knownPageId)return update(knownPageId);
   // Recherche avant chaque création, y compris après une réponse réseau ambiguë.
   const existing=await notionRequest(config,`data_sources/${config.dataSourceId}/query`,{filter:{property:'Notes',rich_text:{contains:leadMarker(lead.id)}},page_size:2},{fetcher});

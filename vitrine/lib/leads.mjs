@@ -1,3 +1,4 @@
+import {fundingPreview} from './funding-preview.mjs';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';import {resolve,join} from 'node:path';import {createHash,randomBytes,createCipheriv,createDecipheriv} from 'node:crypto';import {storageMode,withRecordLock,readRecord,writeRecord} from './store.mjs';import {LeadError} from './lead-schema.mjs';export {validateLead} from './lead-schema.mjs';
 async function key(storage){const mode=storageMode(storage);if(process.env.LEAD_ENCRYPTION_KEY){if(!/^[a-f0-9]{64}$/i.test(process.env.LEAD_ENCRYPTION_KEY))throw Error('Clé de chiffrement invalide');return Buffer.from(process.env.LEAD_ENCRYPTION_KEY,'hex')}if(mode==='postgres'||process.env.VERCEL)throw Error('LEAD_ENCRYPTION_KEY requis pour le stockage distant');const dir=resolve(/* turbopackIgnore: true */ storage||process.env.LEAD_STORAGE_DIR||'.local/leads');await mkdir(dir,{recursive:true,mode:0o700});const path=join(dir,'.key');try{return await readFile(path)}catch(e){if(e.code!=='ENOENT')throw e;const k=randomBytes(32);try{await writeFile(path,k,{mode:0o600,flag:'wx'});return k}catch(e){if(e.code==='EEXIST')return readFile(path);throw e}}}
 function encrypt(lead,k){const iv=randomBytes(12);const c=createCipheriv('aes-256-gcm',k,iv);const data=Buffer.concat([c.update(JSON.stringify(lead)),c.final()]).toString('base64');return {iv:iv.toString('hex'),tag:c.getAuthTag().toString('hex'),data}}
@@ -9,7 +10,7 @@ export async function saveLead(data,token,storage,options={}){
   if(exists&&revision<oldRevision)throw new LeadError('Cette version a déjà été remplacée par votre correction.', '',409);
   if(exists&&revision===oldRevision){if(prior.payloadHash!==payloadHash)throw new LeadError('Cette référence correspond à une autre demande. Réessayez après correction.','',409);return {id,revision,duplicate:true}}
   const createdAt=exists?decryptRecord(prior,k).createdAt:new Date().toISOString();
-  const record={...encrypt({id,revision,createdAt,updatedAt:new Date().toISOString(),data},k),payloadHash,revision,delivery:{...(prior?.delivery||{}),status:'pending',nextAttemptAt:null,attempts:0,firstQueuedAt:prior?.delivery?.firstQueuedAt||new Date().toISOString()}};
+  const record={...encrypt({id,revision,createdAt,updatedAt:new Date().toISOString(),data,orientation:fundingPreview(data)},k),payloadHash,revision,delivery:{...(prior?.delivery||{}),status:'pending',nextAttemptAt:null,attempts:0,firstQueuedAt:prior?.delivery?.firstQueuedAt||new Date().toISOString()}};
   await writeRecord(id,record,storage);return {id,revision,duplicate:false,updated:exists};
  });
 }
