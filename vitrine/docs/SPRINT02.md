@@ -74,3 +74,9 @@ Pour un besoin de financement, une orientation indicative apparaît avant toute 
 Les nouvelles catégories du formulaire couvrent préparation de sortie, financement, montage de dossier, back-office, distribution, accompagnement, administration et stratégie. « Distribution » qualifie un besoin ; elle ne suppose ni partenaire, ni contrat, ni mise en ligne automatique. Les intitulés envoyés restent compatibles avec la propriété texte « Offre envisagée » du CRM.
 
 Validation finale locale : 20 tests serveur réussis, typecheck et build réussis, 12 pages contrôlées sur 6 largeurs sans débordement, scénarios Sprint 02 réussis, et parcours financement réussi sur Chromium et WebKit avec zéro violation axe détectée sur les pages contrôlées. Le test mobile couvre 120 rendus, dont 430 × 932, sans erreur navigateur.
+
+## Plan de projet immédiat — 20 octobre 2026
+
+Tous les parcours produisent désormais une synthèse avant les coordonnées : éléments déjà cadrés, points à verrouiller et trois prochaines actions adaptées au service choisi. Le financement ajoute ensuite les pistes officielles et leurs limites. Le résultat peut être téléchargé en Markdown pour rester lisible et devenir plus tard la source d’une page privée ou d’un e-mail transactionnel.
+
+Cette synthèse est calculée à partir des réponses. Elle ne prétend pas provenir d’une IA ou d’un manager humain. Aucun e-mail ni abonnement marketing n’est activé. Validation : 23 tests serveur, typecheck et build réussis ; parcours complet, export Markdown et quatre variantes financement réussis sur Chromium et WebKit ; 120 rendus mobiles sans débordement ni erreur navigateur.

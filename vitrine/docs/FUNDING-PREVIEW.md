@@ -8,6 +8,6 @@ Choix de contact explicite, par défaut aperçu uniquement pour le financement. 
 
 Aucun e-mail automatique ni relance automatique. Les critères sont versionnés dans lib/funding-preview.mjs ; toute mise à jour nécessite relecture et déploiement. Notion n’est pas un CMS public sans validation.
 
-Tests : npm test (20 tests serveur), npm run test:funding (Chromium/WebKit, choix de contact, aperçu avant envoi, accessibilité), npm run test:mobile et suites existantes. Les envois navigateur sont interceptés ; aucun CRM réel utilisé pour les tests. La Preview garde sa base Notion de test, ses secrets et son namespace isolés.
+Tests : npm test (23 tests serveur), npm run test:funding (Chromium/WebKit, choix de contact, plan et aperçu avant envoi, accessibilité), npm run test:mobile et suites existantes. Les envois navigateur sont interceptés ; aucun CRM réel utilisé pour les tests. La Preview garde sa base Notion de test, ses secrets et son namespace isolés.
 
 Les conditions juridiques et tarifaires de publication restent à confirmer séparément. Aucun paiement ajouté.
