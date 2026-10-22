@@ -1,3 +1,4 @@
+import {nextStepLabel} from './next-step.mjs';
 const priorities={
  'Préparation de sortie':['Lister les masters, visuels, crédits et autorisations déjà disponibles.','Fixer une date cible puis construire le rétroplanning de validation.','Identifier qui valide chaque élément avant la livraison au distributeur.'],
  'Financement':['Confirmer le porteur juridique, ses affiliations et les droits sur le projet.','Mettre le budget et le calendrier en face des critères des dispositifs repérés.','Choisir la prochaine session réaliste avant d’engager une dépense.'],
@@ -30,7 +31,7 @@ export function projectPlan(data){
 }
 export function projectPlanMarkdown(data,{reference}={}){
  const plan=projectPlan(data);if(!plan)return '';
- const lines=['# Mon plan de projet KYMIA','',reference?`Référence : ${reference}`:'Plan personnel — demande non transmise',`Projet : ${plan.title}`,`Maturité : ${data.maturity}`,`Préparation déclarée : ${plan.readiness.score}/${plan.readiness.total} — ${plan.readiness.label}`,'',plan.notice,''];
+ const lines=['# Mon plan de projet KYMIA','',reference?`Référence : ${reference}`:'Plan personnel — demande non transmise',`Projet : ${plan.title}`,`Maturité : ${data.maturity}`,`Préparation déclarée : ${plan.readiness.score}/${plan.readiness.total} — ${plan.readiness.label}`,data.nextStep?`Suite choisie : ${nextStepLabel(data)}`:'','',plan.notice,''].filter((line,index,all)=>line!==''||all[index-1]!=='');
  for(const section of plan.sections){lines.push(`## ${section.number} — ${section.title}`,...section.items.map(item=>`- ${item}`),'')}
  lines.push('## Informations fournies',`- Description : ${data.description}`,`- Budget : ${data.budget?data.budget+' €':'À préciser'}`,`- Calendrier : ${data.calendar||'À préciser'}`,`- Lien : ${data.link||'À préciser'}`,'','Ce document ne confirme aucune prestation, éligibilité, distribution ou obtention de financement.');
  return lines.join('\n');
