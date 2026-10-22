@@ -18,7 +18,8 @@
     "legal:check": "node scripts/operations.mjs legal",
     "test:browser": "node tests/browser.mjs",
     "test:mobile": "node tests/mobile-browser.mjs",
-    "test:funding": "node tests/funding-browser.mjs"
+    "test:funding": "node tests/funding-browser.mjs",
+    "test:practical": "node tests/practical-browser.mjs"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "^5.2.0",
