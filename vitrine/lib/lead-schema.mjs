@@ -28,8 +28,8 @@ export function validateLead(data){
  if(out.link){let url;try{url=new URL(out.link)}catch{throw new LeadError('Saisissez un lien complet, par exemple https://votre-site.fr.','link')};if(!['https:','http:'].includes(url.protocol)||!url.hostname||url.username||url.password)throw new LeadError('Le lien doit être une adresse HTTP ou HTTPS sans identifiants.','link');}
  if(out.privacyVersion!=='notion-v1')throw new LeadError('La notice a changé. Rechargez le formulaire après avoir conservé votre copie.','consent');
  if(out.consent!=='yes')throw new LeadError('Confirmez la lecture de la notice de confidentialité.','consent');
- if(out.sourceService&&!['financement','label-services','developpement-artistique'].includes(out.sourceService))throw new LeadError('Service d’entrée invalide.','sourceService');
+ if(out.sourceService&&!['financement','label-services','developpement-artistique','sacem-autoproduction'].includes(out.sourceService))throw new LeadError('Service d’entrée invalide.','sourceService');
  for(const key of Object.keys(fundingFields))if(!out[key])delete out[key];
  delete out.website;return out;
 }
-export function serviceFromSlug(slug){return {'financement':'Financement','label-services':'Back-office','developpement-artistique':'Préparation de sortie'}[slug]||'';}
+export function serviceFromSlug(slug){return {'financement':'Financement','sacem-autoproduction':'Financement','label-services':'Back-office','developpement-artistique':'Préparation de sortie'}[slug]||'';}

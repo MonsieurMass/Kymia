@@ -1,7 +1,7 @@
 export const nextStepOptions={
- self_guided:{title:'Avancer avec mon plan',description:'Je conserve le diagnostic et je poursuis seul, sans relance commerciale.',action:'Aperçu uniquement — aucune relance commerciale demandée.'},
- human_review:{title:'Demander un premier examen humain',description:'Je souhaite que KYMIA examine mes réponses et vérifie la prochaine étape.',action:'Réaliser un premier examen humain et qualifier la prochaine étape.'},
- scoped_mission:{title:'Cadrer une mission avec KYMIA',description:'Je souhaite préciser le résultat, le périmètre et les conditions d’un accompagnement.',action:'Qualifier le besoin et préparer une proposition de mission cadrée.'}
+ self_guided:{title:'Conserver mon orientation gratuite',description:'Je télécharge le résultat et je poursuis seul, sans relance commerciale.',action:'Aperçu uniquement — aucune relance commerciale demandée.'},
+ human_review:{title:'Demander le diagnostic KYMIA',description:'Je souhaite une analyse humaine payante. Le contenu et le tarif me seront présentés avant toute commande.',action:'Qualifier le besoin et préparer une proposition de diagnostic payant.'},
+ scoped_mission:{title:'Demander le montage du dossier SACEM',description:'Je souhaite recevoir une proposition distincte pour préparer et suivre le dossier, sans garantie d’obtention.',action:'Vérifier le diagnostic et préparer un devis de montage de dossier SACEM.'}
 };
 export function resolveNextStep(data={}){if(nextStepOptions[data.nextStep])return data.nextStep;return data.contactPreference==='not_requested'?'self_guided':'human_review'}
 export function nextStepLabel(data={}){return nextStepOptions[resolveNextStep(data)].title}
