@@ -9,6 +9,10 @@ for(const [name,engine] of [['Chromium',chromium],['WebKit',webkit]]){
   const context=await browser.newContext({viewport:{width:440,height:956},isMobile:true,hasTouch:true,acceptDownloads:true});
   const page=await context.newPage();
   await page.goto('http://localhost:3100/');
+  const ticker=page.locator('.ticker');await ticker.waitFor();
+  assert.equal(await ticker.locator('.ticker-item').count(),3);
+  const visibleTicker=await ticker.locator('.ticker-item').evaluateAll(items=>items.filter(item=>Number(getComputedStyle(item).opacity)>.9).map(item=>({text:item.textContent,left:item.getBoundingClientRect().left,right:item.getBoundingClientRect().right})));
+  assert.equal(visibleTicker.length,1);assert.ok(visibleTicker[0].left>=0&&visibleTicker[0].right<=440);assert.ok(visibleTicker[0].text?.length);
   const tool=page.locator('#orientation');await tool.waitFor();
   await page.getByRole('button',{name:/Je cherche un financement/}).click();
   await page.getByRole('heading',{name:'Des premières pistes et leurs prérequis'}).waitFor();
@@ -30,7 +34,7 @@ for(const [name,engine] of [['Chromium',chromium],['WebKit',webkit]]){
   assert.match(await page.locator('.service-result').innerText(),/résultat immédiat/i);
   const axe=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();
   assert.deepEqual(axe.violations.map(item=>item.id),[]);
-  results.push({engine:name,orientation:true,download:true,prefill:true,serviceChecklist:true,overflow:false,axe:0});
+  results.push({engine:name,ticker:true,orientation:true,download:true,prefill:true,serviceChecklist:true,overflow:false,axe:0});
   await context.close();
  }finally{await browser.close()}
 }
