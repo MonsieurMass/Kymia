@@ -1,0 +1,10 @@
+# Documents de travail privés et résultats locaux, jamais nécessaires au site.
+work
+work*/**
+outputs
+outputs/**
+vitrine/docs/**
+vitrine/tests/**
+**/*.local
+**/.env*
+.git
