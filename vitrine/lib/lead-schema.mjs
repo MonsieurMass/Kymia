@@ -6,7 +6,7 @@ export const fields={
  structure:{label:'Type de structure',max:60,required:true,options:['Artiste sans structure','Micro-entreprise','Association','Société','Label indépendant','Autre']},
  project:{label:'Projet',max:80,required:true,options:['EP','Album','Single','Clip','Concert','Développement de carrière','Structuration administrative','Autre']},
  need:{label:'Besoin',max:80,required:true,options:['Préparation de sortie','Financement','Montage de dossier','Back-office','Distribution','Accompagnement','Administration','Stratégie','Autre']},
- maturity:{label:'Maturité',max:80,required:true,options:['Projet en réflexion','Projet en préparation','Projet déjà lancé','Projet en exploitation']},
+ maturity:{label:'Avancement',max:80,required:true,options:['Projet en réflexion','Projet en préparation','Projet déjà lancé','Projet en exploitation']},
  description:{label:'Description du projet',max:5000,required:true},budget:{label:'Budget',max:15},calendar:{label:'Calendrier',max:200},link:{label:'Lien musical',max:2000},
  consent:{label:'Confidentialité',max:3},privacyVersion:{label:'Version de la notice',max:30},website:{label:'Site web',max:300},sourceService:{label:'Service d’entrée',max:80},
  nextStep:{label:'Suite souhaitée',max:30,options:Object.keys(nextStepOptions)}

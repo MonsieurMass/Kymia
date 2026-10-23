@@ -18,12 +18,12 @@ for(const [name,engine] of [['Chromium',chromium],['WebKit',webkit]]){
   await page.getByRole('heading',{name:'Vérifiez la fenêtre de dépôt'}).waitFor();
   assert.equal(await tool.locator('li').count(),3);
   const downloadEvent=page.waitForEvent('download');
-  await page.getByRole('button',{name:'Télécharger la checklist'}).click();
+  await page.getByRole('button',{name:'Télécharger la liste de vérification'}).click();
   const download=await downloadEvent;
   assert.equal(download.suggestedFilename(),'kymia-checklist-sacem.md');
-  const href=await tool.getByRole('link',{name:'Tester mon projet SACEM'}).getAttribute('href');
+  const href=await tool.getByRole('link',{name:'Faire le point sur mon EP'}).getAttribute('href');
   assert.equal(href,'/demarrer?service=sacem-autoproduction');
-  await tool.getByRole('link',{name:'Tester mon projet SACEM'}).click();
+  await tool.getByRole('link',{name:'Faire le point sur mon EP'}).click();
   await page.locator('form[data-ready=true]').waitFor();
   await page.getByRole('radio',{name:'EP',exact:true}).check();
   await page.getByRole('button',{name:'Continuer'}).click();
